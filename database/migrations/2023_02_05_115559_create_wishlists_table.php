@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTopupsTable extends Migration
+class CreateWishlistsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateTopupsTable extends Migration
      */
     public function up()
     {
-        Schema::create('topups', function (Blueprint $table) {
-            $table->id();
+        Schema::create('wishlists', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained();
-            $table->integer('nominal')->default(10000);
-            $table->enum('status', ['pending', 'diterima', 'ditolak'])->default('pending');
-            $table->string('bukti_pembayaran');
+            $table->foreignId('barang_id')->constrained();
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ class CreateTopupsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('topups');
+        Schema::dropIfExists('wishlists');
     }
 }

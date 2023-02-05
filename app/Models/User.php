@@ -2,25 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $guarded = ['id'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -40,4 +29,45 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function toko()
+    {
+        return $this->hasOne(Toko::class);
+    }
+
+    public function alamats()
+    {
+        return $this->hasMany(Alamat::class);
+    }
+
+    public function transaksis()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
+
+    public function topups()
+    {
+        return $this->hasMany(Topup::class);
+    }
+
+    public function penarikans()
+    {
+        return $this->morphMany(Penarikan::class, 'penarikanable');
+    }
+
+    public function keranjangs()
+    {
+        return $this->belongsToMany(Barang::class, 'keranjangs', 'user_id', 'barang_id')
+            ->withPivot(['sub_total', 'jumlah']);
+    }
+
+    public function wishlists()
+    {
+        return $this->belongsToMany(Barang::class, 'wishlists', 'user_id', 'barang_id');
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_users', 'user_id', 'role_id');
+    }
 }
